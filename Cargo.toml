@@ -1,0 +1,15 @@
+[package]
+name = "codewandler-audio"
+version = "0.1.0"
+edition = "2024"
+description = "Simple audio playback and audio capture"
+license = "MIT"
+
+[dependencies]
+anyhow = "1.0.98"
+cpal = { version = "0.16.0" }
+crossbeam-channel = "0.5.15"
+rodio = "0.20.1"
+tokio = { version = "1.45.1", features = ["full"] }
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
