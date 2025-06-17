@@ -6,8 +6,8 @@ description = "Simple audio playback and audio capture"
 license = "MIT"
 
 [[example]]
-name = "list_devices"
-path = "examples/list_devices.rs"
+name = "probe_devices"
+path = "examples/probe_devices.rs"
 
 [[example]]
 name = "monitor"
