@@ -1,7 +1,7 @@
-use cpal::{SampleRate, StreamConfig};
-use cpal::traits::{DeviceTrait, HostTrait};
-use tracing::{error, info, trace};
 use codewandler_audio::AudioPlayback;
+use cpal::traits::{DeviceTrait, HostTrait};
+use cpal::{SampleRate, StreamConfig};
+use tracing::{error, trace};
 
 pub fn main() -> anyhow::Result<()> {
     let host = cpal::default_host();
@@ -28,8 +28,14 @@ pub fn main() -> anyhow::Result<()> {
 
     println!("---------");
 
-    println!("default input device: {}", host.default_input_device().unwrap().name()?);
-    println!("default output device: {}", host.default_output_device().unwrap().name()?);
+    println!(
+        "default input device: {}",
+        host.default_input_device().unwrap().name()?
+    );
+    println!(
+        "default output device: {}",
+        host.default_output_device().unwrap().name()?
+    );
 
     if let Err(e) = probe_default_input_device() {
         error!("probing input device failed: {:?}", e);
