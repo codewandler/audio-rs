@@ -1,8 +1,8 @@
 use clap::Parser;
+use codewandler_audio::{StreamConfigQuery, supported_input_config, supported_output_config};
+use rodio::DeviceTrait;
 use rodio::cpal::SampleFormat;
 use rodio::cpal::traits::HostTrait;
-use rodio::DeviceTrait;
-use codewandler_audio::{supported_input_config, supported_output_config, StreamConfigQuery};
 
 #[derive(Debug, clap::Parser)]
 struct Args {
@@ -18,7 +18,7 @@ pub fn main() -> anyhow::Result<()> {
 
     let args = Args::parse();
 
-    let config_query = &StreamConfigQuery{
+    let config_query = &StreamConfigQuery {
         sample_format: SampleFormat::F32,
         sample_rate: args.sample_rate,
         channels: args.channels,
@@ -26,15 +26,22 @@ pub fn main() -> anyhow::Result<()> {
 
     println!("searching config for {:?}", config_query);
 
-    let input_device = host.default_input_device().ok_or(anyhow::anyhow!("No default input device found"))?;
+    let input_device = host
+        .default_input_device()
+        .ok_or(anyhow::anyhow!("No default input device found"))?;
     println!("default(input): {:?}", input_device.default_input_config()?);
     match supported_input_config(&input_device, config_query) {
         Err(e) => println!("ERR(input): {}", e),
         Ok(config) => println!("OK(input): {:?}", config),
     }
 
-    let output_device = host.default_output_device().ok_or(anyhow::anyhow!("No default output device found"))?;
-    println!("default(output): {:?}", output_device.default_input_config()?);
+    let output_device = host
+        .default_output_device()
+        .ok_or(anyhow::anyhow!("No default output device found"))?;
+    println!(
+        "default(output): {:?}",
+        output_device.default_input_config()?
+    );
     match supported_output_config(&output_device, config_query) {
         Err(e) => println!("ERR(output): {}", e),
         Ok(config) => println!("OK(output): {:?}", config),
