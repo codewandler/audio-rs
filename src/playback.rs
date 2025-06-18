@@ -63,7 +63,10 @@ impl AudioPlayback<f32> {
         let (_stream, stream_handle) = OutputStream::try_default()?;
         let sink = Sink::try_new(&stream_handle)?;
 
-        let (mixer_handle, mixer_source) = mixer::<f32>(1, sample_rate);
+        let (mixer_handle, mixer_source) = mixer::<f32>(
+            1,
+            sample_rate
+        );
         sink.append(mixer_source);
         sink.play();
 

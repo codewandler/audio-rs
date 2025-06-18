@@ -5,7 +5,7 @@ use tokio::signal::ctrl_c;
 pub async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    let pb = AudioPlayback::new(24_000)?;
+    let pb = AudioPlayback::new(48_000)?;
     //pb.sine(1440.0, Duration::from_millis(1000));
 
     // play via buffer
