@@ -1,7 +1,6 @@
 mod buffer;
 mod capture;
 mod channel;
-mod config;
 mod convert;
 mod ext;
 mod format;
@@ -10,7 +9,7 @@ mod playback;
 mod source;
 
 pub use {
-    buffer::*, capture::*, channel::*, config::*, convert::*, format::*, pipe::*, playback::*,
+    buffer::*, capture::*, channel::*, convert::*, format::*, pipe::*, playback::*,
     source::*,
 };
 
