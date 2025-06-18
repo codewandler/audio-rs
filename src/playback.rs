@@ -70,7 +70,7 @@ impl AudioPlayback<f32> {
 
         let config = supported_output_config(
             &device,
-            StreamConfigQuery {
+            &StreamConfigQuery {
                 sample_rate,
                 buffer_size: 128,
                 sample_format: cpal::SampleFormat::F32,

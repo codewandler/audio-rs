@@ -12,20 +12,20 @@ pub struct StreamConfigQuery {
 
 pub fn supported_input_config(
     device: &cpal::Device,
-    q: StreamConfigQuery,
+    q: &StreamConfigQuery,
 ) -> anyhow::Result<SupportedStreamConfig> {
-    find_best_config(q, device.supported_input_configs()?.into_iter().collect())
+    find_best_config(q, device.supported_input_configs()?.into_iter().collect()).map_err(|e| anyhow::anyhow!("no supported audio input config: {:?}", e))
 }
 
 pub fn supported_output_config(
     device: &cpal::Device,
-    q: StreamConfigQuery,
+    q: &StreamConfigQuery,
 ) -> anyhow::Result<SupportedStreamConfig> {
-    find_best_config(q, device.supported_output_configs()?.into_iter().collect())
+    find_best_config(q, device.supported_output_configs()?.into_iter().collect()).map_err(|e| anyhow::anyhow!("no supported audio output config: {:?}", e))
 }
 
 fn find_best_config(
-    query: StreamConfigQuery,
+    query: &StreamConfigQuery,
     source: Vec<SupportedStreamConfigRange>,
 ) -> anyhow::Result<SupportedStreamConfig> {
     let matches = source

@@ -10,7 +10,8 @@ mod playback;
 mod source;
 
 pub use {
-    buffer::*, capture::*, channel::*, convert::*, format::*, pipe::*, playback::*, source::*,
+    buffer::*, capture::*, channel::*, config::*, convert::*, format::*, pipe::*, playback::*,
+    source::*,
 };
 
 pub trait AudioSink: Send {
