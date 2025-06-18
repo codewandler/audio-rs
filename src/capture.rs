@@ -1,9 +1,10 @@
 use crate::channel::new_audio_channel;
+use crate::config::{StreamConfigQuery, supported_input_config};
 use crate::{AudioSource, AudioSourceFanOut, IntoAudioSource};
-use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use cpal::{SampleRate, StreamConfig};
 use crossbeam_channel::{Receiver, Sender};
-use tracing::error;
+use rodio::cpal::traits::{HostTrait, StreamTrait};
+use rodio::{DeviceTrait, cpal};
+use tracing::{debug, error};
 
 pub struct AudioCapture {
     input_stream: cpal::Stream,
@@ -22,27 +23,32 @@ impl IntoAudioSource for AudioCapture {
 }
 
 pub fn audio_capture(sample_rate: u32) -> anyhow::Result<AudioSourceFanOut<f32, AudioCapture>> {
-    let (tx, rx) = new_audio_channel::<f32>();
-
     // ---- Capture setup ----
-    let host = cpal::default_host();
+    let host = rodio::cpal::default_host();
     let device = host
         .default_input_device()
-        .expect("No input device available");
+        .ok_or_else(|| anyhow::anyhow!("No input device available"))?;
 
-    // Build a StreamConfig for mono at desired sample rate
-    let config = StreamConfig {
-        channels: 1,
-        sample_rate: SampleRate(sample_rate),
-        buffer_size: cpal::BufferSize::Default,
-    };
+    let config = supported_input_config(
+        &device,
+        StreamConfigQuery {
+            sample_rate,
+            buffer_size: 128,
+            sample_format: rodio::cpal::SampleFormat::F32,
+            channels: 1,
+        },
+    )?;
+
+    debug!("using stream config: {:?}", config);
+
+    let (tx, rx) = new_audio_channel::<f32>();
 
     // Error callback
     let err_fn = |err| eprintln!("Input stream error: {}", err);
 
     let tx_cb = tx.clone();
     let input_stream = device.build_input_stream(
-        &config,
+        &config.into(),
         move |data: &[f32], _: &cpal::InputCallbackInfo| {
             for frame in data.chunks(1) {
                 for &sample in frame {

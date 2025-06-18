@@ -1,15 +1,16 @@
 mod buffer;
 mod capture;
 mod channel;
+mod config;
 mod convert;
 mod ext;
 mod format;
+mod pipe;
 mod playback;
 mod source;
-mod stream;
 
 pub use {
-    buffer::*, capture::*, channel::*, convert::*, format::*, playback::*, source::*, stream::*,
+    buffer::*, capture::*, channel::*, convert::*, format::*, pipe::*, playback::*, source::*,
 };
 
 pub trait AudioSink: Send {

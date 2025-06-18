@@ -1,6 +1,7 @@
 use codewandler_audio::AudioPlayback;
 use cpal::traits::{DeviceTrait, HostTrait};
-use cpal::{SampleRate, StreamConfig};
+use rodio::cpal;
+use rodio::cpal::{SampleFormat, SampleRate, StreamConfig, SupportedStreamConfigRange};
 use tracing::{error, trace};
 
 pub fn main() -> anyhow::Result<()> {
@@ -13,6 +14,21 @@ pub fn main() -> anyhow::Result<()> {
     for x in devices {
         if let Ok(name) = x.name() {
             println!("Device: {}", name);
+
+            println!("  Input");
+            let filter = |c: &SupportedStreamConfigRange| {
+                c.sample_format().eq(&SampleFormat::F32) && c.channels().le(&2)
+            };
+            x.supported_input_configs()?
+                .into_iter()
+                .filter(filter)
+                .for_each(|x| println!("    {:?}", x));
+
+            println!("  Output");
+            x.supported_output_configs()?
+                .into_iter()
+                .filter(filter)
+                .for_each(|x| println!("    {:?}", x));
 
             match x.default_input_config() {
                 Ok(x) => println!("  in: {:?}", x),
@@ -46,12 +62,6 @@ pub fn main() -> anyhow::Result<()> {
     } else {
         println!("probe: default output device works")
     }
-
-    Ok(())
-}
-
-fn probe_default_output_device() -> anyhow::Result<()> {
-    let host = cpal::default_host();
 
     Ok(())
 }

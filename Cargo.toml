@@ -15,9 +15,8 @@ path = "examples/monitor.rs"
 
 [dependencies]
 anyhow = "1.0.98"
-cpal = { version = "0.16.0" }
 crossbeam-channel = "0.5.15"
-rodio = "0.20.1"
+rodio = { version = "0.20.1" }
 tokio = { version = "1.45.1", features = ["full"] }
 tracing = "0.1.41"
 tracing-subscriber = "0.3.19"

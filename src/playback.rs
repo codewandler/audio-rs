@@ -1,12 +1,15 @@
 use crate::channel::new_audio_channel;
+use crate::config::{StreamConfigQuery, supported_output_config};
 use crate::format::SampleFormat;
+use cpal::traits::HostTrait;
 use crossbeam_channel::{Receiver, Sender};
 use rodio::dynamic_mixer::DynamicMixerController;
 use rodio::dynamic_mixer::mixer;
 use rodio::source::SineWave;
-use rodio::{OutputStream, Sink, Source};
+use rodio::{OutputStream, Sink, Source, cpal};
 use std::sync::Arc;
 use std::time::Duration;
+use tracing::debug;
 
 pub struct AudioPlayback<F>
 where
@@ -60,7 +63,24 @@ impl Iterator for AudioPlaybackOutput<f32> {
 
 impl AudioPlayback<f32> {
     pub fn new(sample_rate: u32) -> anyhow::Result<Self> {
-        let (_stream, stream_handle) = OutputStream::try_default()?;
+        let host = cpal::default_host();
+        let device = host
+            .default_input_device()
+            .ok_or_else(|| anyhow::anyhow!("No input device available"))?;
+
+        let config = supported_output_config(
+            &device,
+            StreamConfigQuery {
+                sample_rate,
+                buffer_size: 128,
+                sample_format: cpal::SampleFormat::F32,
+                channels: 1,
+            },
+        )?;
+
+        debug!("using stream config {:?}", config);
+
+        let (_stream, stream_handle) = OutputStream::try_from_device_config(&device, config)?;
         let sink = Sink::try_new(&stream_handle)?;
 
         let (mixer_handle, mixer_source) = mixer::<f32>(1, sample_rate);
