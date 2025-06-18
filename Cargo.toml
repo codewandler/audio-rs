@@ -4,7 +4,7 @@ version = "0.3.1"
 edition = "2024"
 description = "Simple audio playback and audio capture"
 license = "MIT"
-repository = "github.com/codewandler/audio-rs"
+repository = "https://github.com/codewandler/audio-rs"
 
 [[example]]
 name = "monitor"
