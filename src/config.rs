@@ -6,7 +6,6 @@ use rodio::cpal;
 pub struct StreamConfigQuery {
     pub sample_format: cpal::SampleFormat,
     pub channels: u16,
-    pub buffer_size: u32,
     pub sample_rate: u32,
 }
 
@@ -36,21 +35,6 @@ fn find_best_config(
             }
 
             if !c.channels().eq(&query.channels) {
-                return false;
-            }
-
-            if !match c.buffer_size() {
-                cpal::SupportedBufferSize::Unknown => false,
-                cpal::SupportedBufferSize::Range { min, max } => {
-                    return query.buffer_size.ge(min) && query.buffer_size.le(max);
-                }
-            } {
-                return false;
-            }
-
-            if c.try_with_sample_rate(cpal::SampleRate(query.sample_rate))
-                .is_none()
-            {
                 return false;
             }
 

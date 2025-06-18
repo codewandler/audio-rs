@@ -33,8 +33,7 @@ pub fn audio_capture(sample_rate: u32) -> anyhow::Result<AudioSourceFanOut<f32, 
         &device,
         &StreamConfigQuery {
             sample_rate,
-            buffer_size: 128,
-            sample_format: rodio::cpal::SampleFormat::F32,
+            sample_format: cpal::SampleFormat::F32,
             channels: 1,
         },
     )?;

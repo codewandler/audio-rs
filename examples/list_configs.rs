@@ -6,9 +6,6 @@ use codewandler_audio::{supported_input_config, supported_output_config, StreamC
 
 #[derive(Debug, clap::Parser)]
 struct Args {
-    #[clap(short, long, default_value = "1024")]
-    buffer_size: u32,
-
     #[clap(short, long, default_value = "24000")]
     sample_rate: u32,
 
@@ -22,7 +19,6 @@ pub fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
     let config_query = &StreamConfigQuery{
-        buffer_size: args.buffer_size,
         sample_format: SampleFormat::F32,
         sample_rate: args.sample_rate,
         channels: args.channels,
