@@ -1,6 +1,6 @@
 [package]
 name = "codewandler-audio"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2024"
 description = "Simple audio playback and audio capture"
 license = "MIT"
